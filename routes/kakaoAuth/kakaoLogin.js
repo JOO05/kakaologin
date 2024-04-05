@@ -31,7 +31,6 @@ router.get('/kakao/callback', async (req, res) => {
     });
     const header = { 'content-type': 'application/x-www-form-urlencoded' };
     const response = await axios.post(url, body, header);
-    console.log(response)
     token = response.data.access_token;
 
   } catch (err) {
@@ -48,13 +47,15 @@ router.get('/kakao/callback', async (req, res) => {
       },
     };
     const response = await axios.get(url, Header);
-    const { nickname, profile_image: img } = response.data.properties;
+    console.log(response.data)
+    const { email } = response.data.kakao_account;
     
-    const payload = { nickname, img };
+    const payload = { email };
     const accessToken = makeToken(payload);
     const cookiOpt = { maxAge: 1000 * 60 * 60 * 24 };
     res.cookie('accessToken', accessToken, cookiOpt);
-    res.send(alertmove('/', `${nickname}님 로그인 되었습니다^^`));
+
+    res.send(alertmove('/', `${email}님 로그인 되었습니다^^`));
   } catch (err) {
     console.log(err);
   }
